@@ -2,21 +2,49 @@ name: Build Applications
 
 on:
   push:
-    branches:
-      - master
-      - main
+    tags:
+      - "v*"
 
 jobs:
+
   build-windows:
+
     runs-on: windows-latest
 
     steps:
-      - name: Test
-        run: echo "Workflow OK"
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install scipy pyinstaller
+
+      - run: pyinstaller --onefile --windowed eta2p_calculator.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: dist/*
 
   build-macos:
+
     runs-on: macos-latest
 
     steps:
-      - name: Test
-        run: echo "Workflow OK"
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install scipy pyinstaller
+
+      - run: pyinstaller --onefile --windowed eta2p_calculator.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: dist/*
