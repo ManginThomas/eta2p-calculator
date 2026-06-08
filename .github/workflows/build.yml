@@ -1,0 +1,70 @@
+name: Build Applications
+
+on:
+push:
+tags:
+- "v*"
+
+jobs:
+
+build-windows:
+
+```
+runs-on: windows-latest
+
+steps:
+
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  - name: Setup Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: "3.12"
+
+  - name: Install dependencies
+    run: |
+      pip install -r requirements.txt
+      pip install pyinstaller
+
+  - name: Build Windows executable
+    run: |
+      pyinstaller --onefile --windowed eta2p_calculator.py
+
+  - name: Upload Windows artifact
+    uses: actions/upload-artifact@v4
+    with:
+      name: windows-build
+      path: dist/*
+```
+
+build-macos:
+
+```
+runs-on: macos-latest
+
+steps:
+
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  - name: Setup Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: "3.12"
+
+  - name: Install dependencies
+    run: |
+      pip install -r requirements.txt
+      pip install pyinstaller
+
+  - name: Build macOS application
+    run: |
+      pyinstaller --onefile --windowed eta2p_calculator.py
+
+  - name: Upload macOS artifact
+    uses: actions/upload-artifact@v4
+    with:
+      name: macos-build
+      path: dist/*
+```
