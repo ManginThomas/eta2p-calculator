@@ -137,6 +137,22 @@ The resulting interval is then truncated to the theoretical range:
 ]
 
 ---
+## Confidence Interval Type
+
+The software allows computation of:
+
+- Two-sided confidence intervals
+- One-sided confidence intervals (effectsize-compatible)
+
+The one-sided interval reproduces the default behaviour of:
+
+effectsize::F_to_eta2()
+
+The two-sided interval reproduces:
+
+effectsize::F_to_eta2(
+  alternative = "two.sided"
+)
 
 ## Two-Sided Confidence Intervals
 
