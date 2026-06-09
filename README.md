@@ -1,26 +1,42 @@
 # Eta²p Calculator
 
-A lightweight graphical application for computing:
+A lightweight graphical application for computing ANOVA effect sizes from F-statistics.
+
+The application computes:
 
 * Partial eta-squared (η²p)
 * Confidence intervals for η²p
 * Cohen's f
 * Exact p-values
 
-from ANOVA F-statistics and degrees of freedom.
+from ANOVA F statistics and degrees of freedom.
 
-The application is available for Windows and macOS through the Releases page.
+---
+
+# Download
+
+Latest release:
+
+https://github.com/ManginThomas/eta2p-calculator/releases/latest
+
+Available for:
+
+* Windows
+* macOS
+
+No installation is required.
 
 ---
 
 # Input Parameters
 
-The user must provide:
+The user provides:
 
 * F statistic
 * Numerator degrees of freedom (df₁)
 * Denominator degrees of freedom (df₂)
 * Confidence level (e.g., 90%, 95%, 99%)
+* Confidence interval type (one-sided or two-sided)
 
 ---
 
@@ -30,15 +46,15 @@ The user must provide:
 
 Partial eta-squared is computed directly from the F statistic:
 
-[
-\eta_p^2 = \frac{F \times df_1}{F \times df_1 + df_2}
-]
+```text
+η²p = (F × df₁) / (F × df₁ + df₂)
+```
 
 where:
 
-* (F) is the observed F statistic
-* (df_1) is the numerator degrees of freedom
-* (df_2) is the denominator degrees of freedom
+* F = observed F statistic
+* df₁ = numerator degrees of freedom
+* df₂ = denominator degrees of freedom
 
 This measure represents the proportion of variance explained by the effect after removing variance attributable to other effects.
 
@@ -46,11 +62,11 @@ This measure represents the proportion of variance explained by the effect after
 
 ## Cohen's f
 
-Cohen's f is derived from η²p as:
+Cohen's f is derived from η²p:
 
-[
-f = \sqrt{\frac{\eta_p^2}{1-\eta_p^2}}
-]
+```text
+f = √(η²p / (1 − η²p))
+```
 
 Common benchmarks:
 
@@ -66,13 +82,11 @@ Common benchmarks:
 
 ## p-value
 
-The exact p-value is computed from the F distribution:
+The exact p-value is computed from the upper tail of the F distribution:
 
-[
-p = P(F_{df_1,df_2} \geq F_{obs})
-]
-
-using the upper tail of the central F distribution.
+```text
+p = P(F(df₁,df₂) ≥ Fobserved)
+```
 
 ---
 
@@ -80,104 +94,44 @@ using the upper tail of the central F distribution.
 
 ## Method
 
-Confidence intervals are obtained using the noncentral F distribution inversion method.
+Confidence intervals are computed using inversion of the noncentral F distribution.
 
-This approach is the same method used by:
+This is the same general approach used by:
 
-* MBESS
-* effectsize
-* ESCI
-* SPSS confidence interval procedures for effect sizes
+* R package effectsize
 
-and is currently considered the reference approach for ANOVA effect size confidence intervals.
-
-The procedure:
+The procedure is:
 
 1. Compute the observed F statistic.
-2. Find the lower and upper noncentrality parameters ((\lambda_L) and (\lambda_U)) such that:
-
-[
-P(F_{nc} \leq F_{obs})
-======================
-
-\alpha/2
-]
-
-and
-
-[
-P(F_{nc} \leq F_{obs})
-======================
-
-1-\alpha/2
-]
-
-3. Convert the resulting confidence limits on the noncentrality parameter into limits on partial eta-squared:
-
-[
-\eta_{p,L}^2
-============
-
-\frac{\lambda_L}
-{\lambda_L + df_1 + df_2 + 1}
-]
-
-[
-\eta_{p,U}^2
-============
-
-\frac{\lambda_U}
-{\lambda_U + df_1 + df_2 + 1}
-]
-
-The resulting interval is then truncated to the theoretical range:
-
-[
-0 \le \eta_p^2 \le 1
-]
+2. Estimate lower and upper confidence limits of the noncentrality parameter (λ).
+3. Transform these limits into partial eta-squared confidence limits.
+4. Restrict the resulting interval to the theoretical range [0,1].
 
 ---
-## Confidence Interval Type
-
-The software allows computation of:
-
-- Two-sided confidence intervals
-- One-sided confidence intervals (effectsize-compatible)
-
-The one-sided interval reproduces the default behaviour of:
-
-effectsize::F_to_eta2()
-
-The two-sided interval reproduces:
-
-effectsize::F_to_eta2(
-  alternative = "two.sided"
-)
 
 ## Two-Sided Confidence Intervals
 
-The software computes true two-sided confidence intervals.
+The calculator can compute true two-sided confidence intervals.
 
-For example:
+Example:
 
 Input:
 
-* F = 5
-* df₁ = 1
-* df₂ = 60
-* 95% CI
+```text
+F = 5
+df₁ = 1
+df₂ = 60
+95% CI
+```
 
 Output:
 
-[
-\eta_p^2 = 0.077
-]
+```text
+η²p = 0.077
+95% CI = [0.000 ; 0.224]
+```
 
-[
-95%~CI = [0.000,\ 0.224]
-]
-
-These values match those returned by:
+This result matches:
 
 ```R
 effectsize::F_to_eta2(
@@ -191,20 +145,54 @@ effectsize::F_to_eta2(
 
 ---
 
+## One-Sided Confidence Intervals
+
+The calculator can also reproduce the default behaviour of the R package effectsize.
+
+Example:
+
+```R
+effectsize::F_to_eta2(
+  f = 5,
+  df = 1,
+  df_error = 60,
+  ci = 0.95
+)
+```
+
+returns:
+
+```text
+η²p = 0.077
+95% CI = [0.000 ; 1.000]
+```
+
+The software provides this option for compatibility with published analyses and existing workflows.
+
+---
+
 # Validation
 
 Results have been verified against:
 
 * R package effectsize
 
+
+
 ---
 
 # Software Requirements
-
-No installation is required.
 
 Standalone executables are available for:
 
 * Windows
 * macOS
+    For macOS use the following command to allow the program to run: cd ~/Downloads && xattr -rd com.apple.quarantine macos-build/*
+
+For users wishing to run the source code:
+
+```bash
+pip install scipy
+python eta2p_calculator.py
+```
 
