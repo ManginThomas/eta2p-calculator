@@ -204,7 +204,10 @@ If macOS still blocks the application, open Terminal and run:
 ```bash
 xattr -rd com.apple.quarantine eta2p_calculator.app
 ```
-or cd ~/Downloads && xattr -rd com.apple.quarantine eta2p_calculator.app
+or, if the file is in the download
+```bash
+cd ~/Downloads && xattr -rd com.apple.quarantine eta2p_calculator.app
+```
 
 Then launch the application again.
 
