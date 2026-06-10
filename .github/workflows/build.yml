@@ -47,14 +47,15 @@ jobs:
 
       - run: pip install scipy pyinstaller
 
-      - run: pyinstaller --onefile --windowed eta2p_calculator.py
+      - name: Build macOS application
+        run: |
+          pyinstaller --windowed eta2p_calculator.py
 
-      - name: Rename executable
-        run: mv dist/eta2p_calculator dist/eta2p_calculator-macos
+      - name: Create ZIP archive
+        run: |
+          cd dist
+          zip -r eta2p_calculator-macos.zip eta2p_calculator.app
 
       - uses: softprops/action-gh-release@v2
         with:
-
-          files: dist/eta2p_calculator-macos
-
-
+          files: dist/eta2p_calculator-macos.zip
