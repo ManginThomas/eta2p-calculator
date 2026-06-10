@@ -62,7 +62,7 @@ This measure represents the proportion of variance explained by the effect after
 
 ## Cohen's f
 
-Cohen's f is derived from η²p:
+Cohen's f is derived from η²p (as in G*Power):
 
 ```text
 f = √(η²p / (1 − η²p))
