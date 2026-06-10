@@ -123,11 +123,21 @@ def calculate():
 
             eta_l = lambda_to_eta_p2(lambda_l, df1, df2)
             eta_u = lambda_to_eta_p2(lambda_u, df1, df2)
+        
+        # IC de Cohen's f
+        f_l = eta_to_f(eta_l)
+        f_u = eta_to_f(eta_u)
+
+        if f_u == float("inf"):
+            f_ci_text = f"[{f_l:.3f} ; ∞]"
+        else:
+            f_ci_text = f"[{f_l:.3f} ; {f_u:.3f}]"
 
         result_text = (
-            f"η²p = {eta:.3f}\n\n"
-            f"IC{int(confidence)}% = [{eta_l:.3f} ; {eta_u:.3f}]\n\n"
-            f"Cohen's f = {cohen_f:.3f}\n\n"
+            f"η²p = {eta:.3f}\n"
+            f"IC{int(confidence)}% (η²p) = [{eta_l:.3f} ; {eta_u:.3f}]\n\n"
+            f"Cohen's f = {cohen_f:.3f}\n"
+            f"IC{int(confidence)}% (f) = {f_ci_text}\n\n"
             f"{format_p_value(p)}"
         )
 
@@ -163,7 +173,7 @@ def copy_results():
 
 root = tk.Tk()
 root.title("Calculateur η²p")
-root.geometry("400x500")
+root.geometry("400x550")
 root.resizable(True, True)
 
 main = ttk.Frame(root, padding=15)
