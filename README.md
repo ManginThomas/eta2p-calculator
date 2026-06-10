@@ -187,7 +187,26 @@ Standalone executables are available for:
 
 * Windows
 * macOS
-    For macOS use the following command to allow the program to run: cd ~/Downloads && xattr -rd com.apple.quarantine macos-build/*
+
+## macOS Security Warning
+
+Because this application is distributed without an Apple Developer certificate,
+macOS may prevent it from opening the first time.
+
+If this happens:
+
+1. Right-click on `eta2p_calculator.app`
+2. Select **Open**
+3. Confirm the dialog
+
+If macOS still blocks the application, open Terminal and run:
+
+```bash
+xattr -rd com.apple.quarantine eta2p_calculator.app
+```
+or cd ~/Downloads && xattr -rd com.apple.quarantine eta2p_calculator.app
+
+Then launch the application again.
 
 For users wishing to run the source code:
 
